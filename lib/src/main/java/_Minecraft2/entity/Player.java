@@ -62,7 +62,6 @@ public class Player extends Entity {
 	    		AABB offsetAABBX = playerAABB.offset(Math.signum(velX) * edgeCheckDistance, 0, 0);
 	    		AABB offsetAABBZ = playerAABB.offset(0, 0, Math.signum(velZ) * edgeCheckDistance);
 
-	    		// Fonction pour tester 4 coins bas d'un AABB
 	    		
 
 	    		if (onGround) {
@@ -141,7 +140,7 @@ public class Player extends Entity {
 	    	resultRaycast = Raycast.raycastDDA(world, 
     		    new Vector3f(camera.getX(), camera.getY(), camera.getZ()),
     		    camera.getViewDirection(), 
-    		    8.0f
+    		    10.0f
     		);
 	    	if(resultRaycast != null) {
 	    	}

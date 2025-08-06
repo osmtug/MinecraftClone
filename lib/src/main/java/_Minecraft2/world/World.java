@@ -112,8 +112,8 @@ public class World {
     }
 
     public void generateFlatWorld() {
-        for (int x = -100; x <= 10; x++) {
-            for (int z = -10; z <= 10; z++) {
+        for (int x = -100; x <= 100; x++) {
+            for (int z = -1000; z <= 10000; z++) {
                 setBlock(x, -6, z, "grass");
             }
         }
@@ -154,10 +154,10 @@ public class World {
 
         glEnable(GL_TEXTURE_2D);
         for (Chunk chunk : chunks.values()) {
-            float chunkWorldX = chunk.chunkX * Chunk.SIZE; 
-            float chunkWorldY = chunk.chunkY * Chunk.SIZE ;
-            float chunkWorldZ = chunk.chunkZ * Chunk.SIZE;
-            float size = Chunk.SIZE ;
+            float chunkWorldX = chunk.chunkX * Chunk.SIZE * 2; 
+            float chunkWorldY = chunk.chunkY * Chunk.SIZE * 2;
+            float chunkWorldZ = chunk.chunkZ * Chunk.SIZE * 2;
+            float size = Chunk.SIZE * 2;
 
             if (!frustum.isBoxInFrustum(chunkWorldX, chunkWorldY, chunkWorldZ, size)) {
                 continue; 

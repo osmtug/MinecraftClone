@@ -21,13 +21,8 @@ public class Game {
 
     private boolean isInventoryOpen = false;
     private boolean wasEPressedLastFrame = false;
-
-	private float mouseSensitivity = 0.1f;
 	
-	private int framebufferWidth = 800;
-	private int framebufferHeight = 600;
-
-    public Game(long window) {
+	public Game(long window) {
         this.window = window;
     }
 
@@ -39,8 +34,6 @@ public class Game {
         world.generateFlatWorld();
         
         glfwSetFramebufferSizeCallback(window, (win, width, height) -> {
-            framebufferWidth = width;
-            framebufferHeight = height;
             glViewport(0, 0, width, height);
         });
     }
@@ -60,7 +53,7 @@ public class Game {
             lastMouseX = mouseX;
             lastMouseY = mouseY;
             
-            player.updateMouse(dx, dy, mouseSensitivity );
+            player.updateMouse(dx, dy, GameSettings.mouseSensitivity );
             world.update(dt);
         }
     }
@@ -97,7 +90,7 @@ public class Game {
         player.drawoutline();
 
         if (isInventoryOpen) {
-            renderInventory();
+            player.getInventory().render(window);
         } else {
             Main.drawCrosshair(window);
         }
@@ -135,36 +128,6 @@ public class Game {
         glLoadIdentity();
     }
 
-    private void renderInventory() {
-        // Exemple d'affichage d'un fond gris
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(window, width, height);
-        glOrtho(0, width.get(0), height.get(0), 0, -1, 1);
+    
 
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        glDisable(GL_TEXTURE_2D);
-        glDisable(GL_DEPTH_TEST);
-        glColor4f(0.1f, 0.1f, 0.1f, 0.8f);
-        glBegin(GL_QUADS);
-        glVertex2f(100, 100);
-        glVertex2f(700, 100);
-        glVertex2f(700, 500);
-        glVertex2f(100, 500);
-        glEnd();
-
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_DEPTH_TEST);
-        glPopMatrix();
-
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-    }
 }

@@ -3,7 +3,6 @@ package _Minecraft2.world.block;
 import static org.lwjgl.opengl.GL11.*;
 
 import _Minecraft2.collision.AABB;
-import _Minecraft2.Item.tool.ToolType;
 
 public abstract class Block {
 	

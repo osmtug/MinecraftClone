@@ -1,7 +1,28 @@
 package _Minecraft2;
 
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.lwjgl.BufferUtils;
 
 import _Minecraft2.Item.Item;
 import _Minecraft2.Item.ItemStack;
@@ -77,5 +98,65 @@ public class Inventory {
                 System.out.println("Slot " + i + ": empty");
             }
         }
+    }
+    
+    public void render(long window) {
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+
+        IntBuffer widthBuf = BufferUtils.createIntBuffer(1);
+        IntBuffer heightBuf = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(window, widthBuf, heightBuf);
+        int winWidth = widthBuf.get(0);
+        int winHeight = heightBuf.get(0);
+
+        glOrtho(0, winWidth, winHeight, 0, -1, 1);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+
+        glColor4f(0.1f, 0.1f, 0.1f, 0.8f);
+
+        // Ratio du rectangle (par exemple 3:2)
+        float rectRatio = 3.0f / 2.0f;
+
+        float rectWidth;
+        float rectHeight;
+
+        float winRatio = (float) winWidth / winHeight;
+
+        if (winRatio > rectRatio) {
+            // La fenêtre est plus large que le ratio → limiter par la hauteur
+            rectHeight = winHeight * 0.8f;
+            rectWidth = rectHeight * rectRatio;
+        } else {
+            // La fenêtre est plus haute que le ratio → limiter par la largeur
+            rectWidth = winWidth * 0.8f;
+            rectHeight = rectWidth / rectRatio;
+        }
+
+        // Centrage
+        float x = (winWidth - rectWidth) / 2.0f;
+        float y = (winHeight - rectHeight) / 2.0f;
+
+        glBegin(GL_QUADS);
+        glVertex2f(x, y);
+        glVertex2f(x + rectWidth, y);
+        glVertex2f(x + rectWidth, y + rectHeight);
+        glVertex2f(x, y + rectHeight);
+        glEnd();
+
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        glPopMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
     }
 }

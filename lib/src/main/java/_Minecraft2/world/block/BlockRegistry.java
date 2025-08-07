@@ -9,8 +9,8 @@ public class BlockRegistry {
 	private static final Map<String, BlockType> byName = new HashMap<>();
     private static final Map<Integer, BlockType> byId = new HashMap<>();
 
-    public static BlockType register(String name, int id, BlockProperties properties) {
-        BlockType type = new BlockType(name, properties);
+    public static BlockType register(String name, int id, BlockProperties properties, String itemTexturePath) {
+        BlockType type = new BlockType(name, properties, itemTexturePath);
         byName.put(name, type);
         byId.put(id, type);
         properties.type = type;

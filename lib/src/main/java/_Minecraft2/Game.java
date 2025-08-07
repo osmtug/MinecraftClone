@@ -28,6 +28,7 @@ public class Game {
 
     public void init() {
         GameInit.registerBlocks();
+        GameInit.registerTexture();
         player = new Player(window, 0f, 8f, 5f);
         world = new World(player);
         player.updateChunk(world, 0, 0, 0);

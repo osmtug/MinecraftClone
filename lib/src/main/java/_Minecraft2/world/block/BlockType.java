@@ -1,7 +1,6 @@
 package _Minecraft2.world.block;
 
 import _Minecraft2.Item.BlockItem;
-import _Minecraft2.Item.Item;
 import _Minecraft2.Item.ItemRegistry;
 
 public class BlockType {
@@ -9,10 +8,10 @@ public class BlockType {
     public final BlockProperties properties;
     public final BlockItem item;
 
-    public BlockType(String name,BlockProperties properties) {
+    public BlockType(String name,BlockProperties properties, String itemTexturePath) {
         this.name = name;
         this.properties = properties;
-        this.item = new BlockItem(name, true, 64);
+        this.item = new BlockItem(name, true, 64, itemTexturePath);
         ItemRegistry.register(this.item);
     }
 

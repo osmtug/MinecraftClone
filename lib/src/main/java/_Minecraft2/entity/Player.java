@@ -29,7 +29,7 @@ public class Player extends Entity {
 	    
 	    public Player(long window, float startX, float startY, float startZ) {
 	    	super(startX, startY, startZ);
-	    	inventory = new Inventory(10);
+	    	inventory = new Inventory(46);
 	        this.window = window;
 	        this.camera = new Camera(x, y + 1.5f, z); 
 	    }

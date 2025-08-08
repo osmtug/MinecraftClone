@@ -61,7 +61,6 @@ public class ItemEntity extends Entity {
         if (world.player.getAABB().intersects(itemAABB)) {
             if (world.player.getInventory().addItem(item, quantity)) {
                 world.removeEntity(this); 
-                System.out.println("ramassage success");
             }
         }
     }

@@ -8,10 +8,10 @@ public class BlockType {
     public final BlockProperties properties;
     public final BlockItem item;
 
-    public BlockType(String name,BlockProperties properties, String itemTexturePath) {
+    public BlockType(String name,BlockProperties properties) {
         this.name = name;
         this.properties = properties;
-        this.item = new BlockItem(name, true, 64, itemTexturePath);
+        this.item = new BlockItem(name, true, 64);
         ItemRegistry.register(this.item);
     }
 

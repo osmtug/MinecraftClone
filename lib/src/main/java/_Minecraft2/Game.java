@@ -19,7 +19,6 @@ public class Game {
     
     private double lastMouseX = 400, lastMouseY = 300;
 
-    private boolean isInventoryOpen = false;
     private boolean wasEPressedLastFrame = false;
 	
 	public Game(long window) {
@@ -42,7 +41,7 @@ public class Game {
     public void update(float dt) {
         handleInput();
 
-        if (!isInventoryOpen) {
+        if (!player.getInventory().isOpen) {
             double[] xpos = new double[1], ypos = new double[1];
             glfwGetCursorPos(window, xpos, ypos);
             
@@ -62,8 +61,8 @@ public class Game {
     private void handleInput() {
         boolean ePressed = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
         if (ePressed && !wasEPressedLastFrame) {
-            isInventoryOpen = !isInventoryOpen;
-            if (isInventoryOpen) {
+        	player.getInventory().isOpen = !player.getInventory().isOpen;
+            if (player.getInventory().isOpen) {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                 
                 int[] width = new int[1];
@@ -90,7 +89,7 @@ public class Game {
         world.render(cam, window);
         player.drawoutline();
 
-        if (isInventoryOpen) {
+        if (player.getInventory().isOpen) {
             player.getInventory().render(window);
         } else {
             Main.drawCrosshair(window);

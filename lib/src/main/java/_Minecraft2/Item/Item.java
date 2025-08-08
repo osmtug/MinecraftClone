@@ -15,7 +15,9 @@ public class Item {
         this.name = name;
         this.stackable = stackable;
         this.maxStackSize = maxStackSize;
-        this.textureId = TextureLoader.loadTexture(GameSettings.texturePath + TexturePath);
+        this.textureId = 0;
+        if(TexturePath != null)
+        	this.textureId = TextureLoader.loadTexture(GameSettings.texturePath + TexturePath);
     }
 
     public String getName() { return name; }
@@ -33,5 +35,9 @@ public class Item {
         glTexCoord2f(1f, 1f); glVertex2f(x + size, y + size);
         glTexCoord2f(0f, 1f); glVertex2f(x, y + size);
         glEnd();
+    }
+    
+    public void render(float x, float y, float size, float windowWidth, float windowHeight, float dz) {
+    	render(x, y, size, windowWidth, windowHeight);
     }
 }

@@ -16,8 +16,8 @@ public class Player extends Entity {
 
 	    public Raycast.Result resultRaycast;
 	    
-	    private float breakCooldown = 0.2f;
-	    private float placeCooldown = 0.2f;
+	    private float breakCooldown = 0.1f; // 0.2
+	    private float placeCooldown = 0.1f; // 0.2
 	    private float breakDuration = 1;
 	    private float placeDuration = 1;
 
@@ -29,9 +29,10 @@ public class Player extends Entity {
 	    
 	    public Player(long window, float startX, float startY, float startZ) {
 	    	super(startX, startY, startZ);
-	    	inventory = new Inventory(46);
+	    	inventory = new Inventory(38, window);
 	        this.window = window;
 	        this.camera = new Camera(x, y + 1.5f, z); 
+	        speed = 10f;
 	    }
 	    
 	    boolean hasSupportUnderAABB(AABB aabb, World world) {
@@ -101,7 +102,6 @@ public class Player extends Entity {
 	    }
 	    
 	    public void handleMovementXZ(float deltaTime){
-
 	    	Vector2f movement = getMovementVectorWithInput();
 	    	
 	    	if (movement.length() > 0) {
@@ -200,7 +200,7 @@ public class Player extends Entity {
 	    		return true;
 	    	}else {
 	    		height = 3.5f;
-	    		speed = 10f;
+	    		speed = 10;
 	    		return false;
 	    	}
 	    }

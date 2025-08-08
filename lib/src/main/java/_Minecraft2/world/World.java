@@ -112,23 +112,18 @@ public class World {
     }
 
     public void generateFlatWorld() {
-        for (int x = -100; x <= 100; x++) {
-            for (int z = -1000; z <= 10000; z++) {
+        for (int x = -10; x <= 10; x++) {
+            for (int z = -10; z <= 1000; z++) {
                 setBlock(x, -6, z, "grass");
             }
         }
         
-        /*for (int x = -10; x <= 100; x++) {
-            for (int z = -10; z <= 100; z++) {
-                setBlock(x, -1, z, new Grass(x, -1, z));
-            }
-        }*/
-        setBlock(0, -3, 0, "grass");
-        setBlock(1, -2, 0, "grass");
-        setBlock(2, -1, 0, "grass");
-        setBlock(3, 0, 0, "grass");
-        setBlock(4, 1, 0, "grass");
-        setBlock(5, 2, 0, "grass");
+        setBlock(0, -3, 0, "dirt");
+        setBlock(1, -3, 0, "dirt");
+        setBlock(2, -3, 0, "dirt");
+        setBlock(3, -3, 0, "dirt");
+        setBlock(4, -3, 0, "dirt");
+        setBlock(5, -3, 0, "dirt");
     }
 
     public void render(Camera camera, long window) {
@@ -208,7 +203,6 @@ public class World {
     
     public void update(float dt) {
     	Set<Entity> uniqueEntities = new HashSet<>();
-//    	player.update(dt, this);
     	for (Chunk chunk : getChunksAroundPlayer(10)) {
     		uniqueEntities.addAll(chunk.getEntities());
         }
@@ -220,9 +214,9 @@ public class World {
     }
     
     public Iterable<Chunk> getChunksAroundPlayer(int range) {
-        int playerChunkX = (int) Math.floor(player.getX() / Chunk.SIZE);
-        int playerChunkY = (int) Math.floor(player.getY() / Chunk.SIZE);
-        int playerChunkZ = (int) Math.floor(player.getZ() / Chunk.SIZE);
+        int playerChunkX = (int) Math.floor(player.getX() / 2 / Chunk.SIZE);
+        int playerChunkY = (int) Math.floor(player.getY() / 2 / Chunk.SIZE);
+        int playerChunkZ = (int) Math.floor(player.getZ() / 2 / Chunk.SIZE);
 
         List<Chunk> result = new ArrayList<>();
 
@@ -242,7 +236,7 @@ public class World {
                 }
             }
         }
-
+        
         return result;
     }
 

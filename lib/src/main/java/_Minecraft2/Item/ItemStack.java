@@ -2,7 +2,7 @@ package _Minecraft2.Item;
 
 public class ItemStack {
 	private final Item item;
-    private int quantity;
+    public int quantity;
 
     public ItemStack(Item item, int quantity) {
         this.item = item;
@@ -26,5 +26,9 @@ public class ItemStack {
 
     public boolean canStackWith(ItemStack other) {
         return item.getName().equals(other.getItem().getName()) && item.isStackable();
+    }
+    
+    public boolean canAdd(int amount) {
+		return item.isStackable() && item.getMaxStackSize() >= getQuantity() + amount;
     }
 }

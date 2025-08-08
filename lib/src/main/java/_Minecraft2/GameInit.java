@@ -9,12 +9,17 @@ public class GameInit {
         BlockProperties grassProps = new BlockProperties(
         	"grass_top.png", "dirt.png", "grass_side.png"
         );
-        BlockRegistry.register("grass", 1, grassProps, "grass_side.png");
+        BlockRegistry.register("grass", 1, grassProps);
+        
+        BlockProperties dirtProps = new BlockProperties(
+            	"dirt.png"
+            );
+            BlockRegistry.register("dirt", 1, dirtProps);
         
         BlockProperties airProps = new BlockProperties(
             	null, false
             );
-            BlockRegistry.register("air", 2, airProps, "grass_side.png");
+            BlockRegistry.register("air", 2, airProps);
 	}
 	
 	public static void registerTexture() {

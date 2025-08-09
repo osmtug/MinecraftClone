@@ -6,6 +6,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import _Minecraft2.Inventory;
+import _Minecraft2.Item.BlockItem;
+import _Minecraft2.Item.ItemStack;
+import _Minecraft2.UI.HUD;
 import _Minecraft2.collision.AABB;
 import _Minecraft2.render.Camera;
 import _Minecraft2.util.Raycast;
@@ -25,14 +28,23 @@ public class Player extends Entity {
 	    private long window;
 	    
 	    private Inventory inventory;
+	    private HUD hud;
+
+		private int selectedHotbarSlot = 0;
 	    
 	    
 	    public Player(long window, float startX, float startY, float startZ) {
 	    	super(startX, startY, startZ);
-	    	inventory = new Inventory(38, window);
+	    	inventory = new Inventory(36, window);
+	    	hud = new HUD(window);
 	        this.window = window;
 	        this.camera = new Camera(x, y + 1.5f, z); 
 	        speed = 10f;
+	        
+	        glfwSetScrollCallback(window, (win, xoffset, yoffset) -> {
+	        	this.selectedHotbarSlot = (this.getSelectedHotbarSlot() - (int)yoffset) % 9;
+	        	if (selectedHotbarSlot < 0) selectedHotbarSlot += 9;
+	        });
 	    }
 	    
 	    boolean hasSupportUnderAABB(AABB aabb, World world) {
@@ -178,7 +190,15 @@ public class Player extends Entity {
 	                
 	                Block existing = world.getBlockAt(newX, newY, newZ);
 	                if ((existing == null || !existing.isSolid()) && !world.hasEntityInBlock(newX, newY, newZ)) {
-	                    world.setBlock(newX, newY, newZ, "grass");
+	                	ItemStack selectedStack = inventory.getHotbar().get(selectedHotbarSlot);
+	                	if(selectedStack != null && (selectedStack.getItem() instanceof BlockItem)) {
+	                		world.setBlock(newX, newY, newZ, selectedStack.getItem().getName());
+		                	selectedStack.quantity--;
+		                	if (selectedStack.quantity <= 0) {
+		                		inventory.getHotbar().set(selectedHotbarSlot, null);
+		                	}
+	                	}
+	                    
 	                }
 	    	    }
 	    	}else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
@@ -211,6 +231,18 @@ public class Player extends Entity {
 
 		public void setInventory(Inventory inventory) {
 			this.inventory = inventory;
+		}
+		
+		public void renderHUD() {
+			hud.render(this);
+		}
+
+		public int getSelectedHotbarSlot() {
+			return selectedHotbarSlot;
+		}
+
+		public void setSelectedHotbarSlot(int selectedHotbarSlot) {
+			this.selectedHotbarSlot = selectedHotbarSlot;
 		}
 
 }

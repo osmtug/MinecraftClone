@@ -92,6 +92,7 @@ public class Game {
         if (player.getInventory().isOpen) {
             player.getInventory().render(window);
         } else {
+        	player.renderHUD();
             Main.drawCrosshair(window);
         }
     }

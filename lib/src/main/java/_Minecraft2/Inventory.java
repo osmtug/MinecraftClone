@@ -66,6 +66,9 @@ public class Inventory {
         });
     }
     
+    public List<ItemStack> getHotbar(){
+    	return slots.subList(Math.max(slots.size() - 9, 0), slots.size());
+    }
     
 
     public boolean addItem(Item item, int quantity) {
@@ -82,7 +85,6 @@ public class Inventory {
             }
         }
 
-        // Ajoute dans des slots vides
         for (int i = 0; i < size; i++) {
             if (slots.get(i) == null) {
                 int toAdd = Math.min(item.getMaxStackSize(), quantity);
@@ -92,7 +94,7 @@ public class Inventory {
             }
         }
 
-        return false; // Pas assez de place
+        return false; 
     }
 
     public ItemStack getSlot(int index) {
@@ -125,6 +127,8 @@ public class Inventory {
             }
         }
     }
+    
+    
     
     public void render(long window) {
     	this.window = window;
@@ -259,10 +263,8 @@ public class Inventory {
                     	stack.getItem().render(itemX, itemY, itemSize, windowWidth, windowHeight);
                     	
                         if (stack.getQuantity() > 1) {
-                        	int factor = 3;
-                        	if (stack.getQuantity() >= 10) factor = 2;
                             String qtyText = Integer.toString(stack.getQuantity());
-                            FontRenderer.drawTextInPixels(qtyText, itemX + (itemSize/4)*factor , itemY + itemSize*1.2f, new Vector3f(1f, 1f, 1f), windowWidth, windowHeight, rectHeight / 800);
+                            FontRenderer.drawTextInPixelsRightAligned(qtyText, itemX + itemSize *1.2f , itemY + itemSize*1.2f, new Vector3f(1f, 1f, 1f), windowWidth, windowHeight, itemSize / 45);
                         }
                     }
                 }
@@ -550,9 +552,8 @@ public class Inventory {
             }
         }
         
-        // Puis parcourir les autres slots
         for (int i = 0; i < size && remaining > 0; i++) {
-            if (i == targetSlotIndex) continue; // Déjà traité
+            if (i == targetSlotIndex) continue; 
             
             ItemStack stack = slots.get(i);
             if (stack != null && stack.getItem().getName().equals(targetItem.getName())) {
@@ -566,7 +567,6 @@ public class Inventory {
             }
         }
         
-        // Si on n'a rien pu rassembler, annuler
         if (takenItemStack.getQuantity() == 0) {
             takenItemStack = null;
         }

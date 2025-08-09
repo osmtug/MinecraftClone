@@ -359,5 +359,35 @@ public class FontRenderer {
 
         drawTextWithProjectionAndScale(text, pixelX, pixelY, color, projMatrix, scale);
     }
+    
+    public static void drawTextInPixelsRightAligned(String text, float pixelX, float pixelY, Vector3f color, float windowWidth, float windowHeight, float scale) {
+        if (!isInit) init();
+
+        // Calcul de la largeur totale du texte en pixels (avec le scale)
+        float totalWidth = 0;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer xBuf = stack.floats(0f);
+            FloatBuffer yBuf = stack.floats(0f);
+
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (c < 32 || c >= 128) continue;
+
+                STBTTAlignedQuad q = STBTTAlignedQuad.malloc(stack);
+                STBTruetype.stbtt_GetBakedQuad(charData, BITMAP_W, BITMAP_H, c - 32, xBuf, yBuf, q, true);
+            }
+            totalWidth = xBuf.get(0) * scale; // xBuf contient la position X après le dernier char
+        }
+
+        // Ajuster pixelX pour qu'il soit le bord gauche après décalage
+        float startX = pixelX - totalWidth;
+
+        // Matrice de projection orthographique
+        float[] projMatrix = new float[16];
+        createOrthoMatrix(projMatrix, 0, windowWidth, windowHeight, 0, -1, 1);
+
+        // Dessiner
+        drawTextWithProjectionAndScale(text, startX, pixelY, color, projMatrix, scale);
+    }
 
 }

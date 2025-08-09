@@ -25,5 +25,7 @@ public class GameInit {
 	public static void registerTexture() {
 		TextureRegistry.register("inventoryBackground", "UI/inventory/inventoryBackground.png");
 		TextureRegistry.register("slot", "UI/inventory/slot.png");
+		TextureRegistry.register("hotbarSlot", "UI/HUD/slot.png");
+		TextureRegistry.register("hotbarSelectedSlot", "UI/HUD/sELECTEDslot.png");
 	}
 }

@@ -54,20 +54,22 @@ public class Inventory {
                     DoubleBuffer xpos = BufferUtils.createDoubleBuffer(1);
                     DoubleBuffer ypos = BufferUtils.createDoubleBuffer(1);
                     glfwGetCursorPos(window, xpos, ypos);
-                    
+
                     double mouseX = xpos.get(0);
                     double mouseY = ypos.get(0);
-                    
-                    handleMouseClick(mouseX, mouseY, button);
-                }else if(action == GLFW_RELEASE) {
-                	handleMouseRelease();
+
+                    boolean shiftDown = (mods & GLFW_MOD_SHIFT) != 0;
+
+                    handleMouseClick(mouseX, mouseY, button, shiftDown);
+                } else if (action == GLFW_RELEASE) {
+                    handleMouseRelease();
                 }
             }
         });
     }
     
     public List<ItemStack> getHotbar(){
-    	return slots.subList(Math.max(slots.size() - 9, 0), slots.size());
+    	return slots.subList(0, 9);
     }
     
 
@@ -227,7 +229,7 @@ public class Inventory {
 
         glColor4f(1f, 1f, 1f, 1f);
 
-        int slotIndex = 0;
+        int slotIndex = 9;
         
         float scale = 0.6f; 
     	float itemSize = slotSize * scale;
@@ -253,7 +255,7 @@ public class Inventory {
                 glTexCoord2f(0f, 1f); glVertex2f(slotX, slotY + slotSize);
                 glEnd();
 
-                if (slots != null && slotIndex < slots.size() && slots.get(slotIndex) != null) {
+                if (slots != null && slots.get(slotIndex) != null) {
                     ItemStack stack = slots.get(slotIndex);
                     if (stack.getItem() != null) {
 
@@ -270,6 +272,9 @@ public class Inventory {
                 }
 
                 slotIndex++;
+                if (slotIndex >= slots.size()) {
+                	slotIndex = 0;
+                }
             }
         }
         renderTakenItemStack(itemSize, windowWidth, windowHeight, rectHeight);
@@ -297,30 +302,75 @@ public class Inventory {
         }
     }
     
-    public void handleMouseClick(double mouseX, double mouseY, int button) {
+    public void handleMouseClick(double mouseX, double mouseY, int button, boolean shiftDown) {
         int clickedSlot = getSlotAtPosition(mouseX, mouseY);
-        
+
         if (clickedSlot != -1) {
-        	if (button == 0) {
-        		long currentTime = System.currentTimeMillis();
-        		
-        		if (clickedSlot == lastClickedSlot && 
-        		    (currentTime - lastClickTime) <= DOUBLE_CLICK_DELAY) { 
-        			
-        			gatherSimilarItems(clickedSlot);
-        		} else {
-        			handleSlotClick(clickedSlot, true);
-        		}
-        		
-        		lastClickTime = currentTime;
-        		lastClickedSlot = clickedSlot;
-        	} else if (button == 1) {
-        		handleSlotClick(clickedSlot, false);
-        	}
+            if (button == 0) { // clic gauche
+                if (shiftDown) {
+                    handleShiftClick(clickedSlot); // ta logique pour shift + clic
+                    return;
+                }
+
+                long currentTime = System.currentTimeMillis();
+                if (clickedSlot == lastClickedSlot &&
+                    (currentTime - lastClickTime) <= DOUBLE_CLICK_DELAY) {
+
+                    gatherSimilarItems(clickedSlot);
+                } else {
+                    handleSlotClick(clickedSlot, true);
+                }
+
+                lastClickTime = currentTime;
+                lastClickedSlot = clickedSlot;
+            } 
+            else if (button == 1) { // clic droit
+                if (shiftDown) {
+                	// TODO (maybe)
+                } else {
+                    handleSlotClick(clickedSlot, false);
+                }
+            }
         }
     }
     
-    public void handleMouseRelease() {
+    private void handleShiftClick(int slotIndex) {
+    	ItemStack stack = slots.get(slotIndex);
+    	
+    	if (stack == null || stack.getQuantity() <= 0) return;
+    	
+		if (slotIndex < 9) {
+			MoveItemStackTo(slotIndex, stack, 9, slots.size());
+		}else {
+			MoveItemStackTo(slotIndex, stack, 0, 9);
+		}
+	}
+    
+    public void MoveItemStackTo(int slotIndex, ItemStack stack, int from, int to) {
+    	for (int i = from; i < to; i++) {
+			ItemStack currentStack = slots.get(i);
+			if(currentStack != null && currentStack.canStackWith(stack)) {
+				int amountToStack = Math.min(currentStack.getItem().getMaxStackSize() - currentStack.getQuantity(), stack.getQuantity());
+				stack.remove(amountToStack);
+				currentStack.add(amountToStack);
+				if (stack.isEmpty()) {
+					slots.set(slotIndex, null);
+					return;
+				}
+			}
+		}
+    	
+    	for (int i = from; i < to; i++) {
+    		ItemStack currentStack = slots.get(i);
+			if (currentStack == null) {
+				slots.set(i, stack);
+				slots.set(slotIndex, null);
+				break;
+			}
+    	}
+    }
+
+	public void handleMouseRelease() {
     	if (takenItemStack != null && takenItemStack.isEmpty()) takenItemStack = null;
     	isLeftCLickPressed = false;
     	isRightCLickPressed = false;
@@ -368,7 +418,7 @@ public class Inventory {
         float startX = x + marginX;
         float startY = y + rectHeight - totalSlotsHeight - bottomMargin;
 
-        int slotIndex = 0;
+        int slotIndex = 9;
         for (int row = 0; row < rows; row++) {
             float yOffset;
             if (row == rows - 1) {
@@ -387,6 +437,9 @@ public class Inventory {
                 }
 
                 slotIndex++;
+                if (slotIndex >= slots.size()) {
+                	slotIndex = 0;
+                }
             }
         }
 

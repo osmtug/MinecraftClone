@@ -112,9 +112,23 @@ public class World {
     }
 
     public void generateFlatWorld() {
-        for (int x = -10; x <= 10; x++) {
-            for (int z = -10; z <= 1000; z++) {
-                setBlock(x, -6, z, "grass");
+    	int xMin = -10;
+    	int xMax = 100;
+    	int yMin = -30;
+    	int yMax = -4;
+    	int zMin = -10;
+    	int Zmax = 100;
+        for (int x = xMin; x <= xMax; x++) {
+            for (int z = zMin; z <= Zmax; z++) {
+                setBlock(x, yMax, z, "grass");
+            }
+        }
+        
+        for (int x = xMin; x <= xMax; x++) {
+            for (int z = zMin; z <= Zmax; z++) {
+            	for (int y = yMin; y < yMax; y++) {
+                    setBlock(x, y, z, "dirt");
+                }
             }
         }
         

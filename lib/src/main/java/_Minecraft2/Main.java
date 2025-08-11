@@ -1,9 +1,11 @@
 package _Minecraft2;
 
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import _Minecraft2.util.FontRenderer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -70,6 +72,9 @@ public class Main {
 
             game.update(deltaTime);
             game.render();
+            
+            int fps = Math.round(1/deltaTime);
+            FontRenderer.drawTextInPixels("FPS : " + fps, 10, 40, new Vector3f(1,1,1), 1200, 800, 1);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
